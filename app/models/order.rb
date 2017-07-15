@@ -1,25 +1,12 @@
 class Order < ApplicationRecord
   belongs_to :user
   has_many :product_lists
-  before_create :generate_token
 
   validates :billing_name, presence: true
   validates :billing_address, presence: true
   validates :shipping_name, presence: true
   validates :shipping_address, presence: true
-
-
-   def generate_token
-     self.token = SecureRandom.uuid
-   end
-
-  def set_payment_with!(method)
-    self.update_columns(payment_method: method )
-  end
-
-  def pay!
-    self.update_columns(is_paid: true )
-  end
+  before_create :generate_token
 
   include AASM
 
@@ -32,7 +19,7 @@ class Order < ApplicationRecord
     state :good_returned
 
 
-    event :make_payment, after_commit: :pay! do
+      event :make_payment, after_commit: :pay! do
       transitions from: :order_placed, to: :paid
     end
 
@@ -53,5 +40,16 @@ class Order < ApplicationRecord
     end
   end
 
+  def generate_token
+    self.token = SecureRandom.uuid
+  end
+
+  def set_payment_with!(method)
+   self.update_columns(payment_method: method )
+  end
+
+ def pay!
+   self.update_columns(is_paid: true )
+ end
 
 end
