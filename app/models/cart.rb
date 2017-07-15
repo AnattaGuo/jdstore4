@@ -7,7 +7,6 @@ class Cart < ApplicationRecord
     ci.product = product
     ci.quantity = 1
     ci.save
-
   end
 
   def total_price
@@ -18,6 +17,10 @@ class Cart < ApplicationRecord
       end
     end
     sum
+  end
+
+  def clean!
+    cart_items.destroy_all
   end
 
 end
