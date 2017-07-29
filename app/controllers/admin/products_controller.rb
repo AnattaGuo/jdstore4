@@ -39,6 +39,18 @@ class Admin::ProductsController < ApplicationController
     end
   end
 
+  def bulk_update
+    total = 0
+    Array(params[:ids]).each do |product_id|
+       product = Product.find(product_id)
+       product.destroy
+       total += 1
+   end
+
+    flash[:alert] = "成功完成 #{total} 笔"
+    redirect_to admin_products_path
+  end
+
   private
 
   def product_params
